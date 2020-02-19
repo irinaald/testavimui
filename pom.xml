@@ -20,7 +20,12 @@
         <!-- JAVA VERSIJA 1.8 (!) -->
         <java.version>1.8</java.version>
     </properties>
-
+    <!-- jeigu nėra pc įdiegta 1.8 versijos, galima pabandyti per maven parsiųsti
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    -->
     <dependencies>
         <!-- sukonfigūruotas Spring Boot web aplikacijoms -->
         <dependency>
@@ -31,6 +36,19 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!--Reikalingas, kad veiktų projektas su JSP failais -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <scope>runtime</scope><!--in my case provided not working so write runtime-->
+        </dependency>
+        <!-- Jeigu nepridėsime, gausime javax.servlet.ServletException -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
         <!-- testavimui  -->

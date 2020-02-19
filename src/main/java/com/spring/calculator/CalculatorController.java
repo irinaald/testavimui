@@ -1,8 +1,8 @@
 package com.spring.calculator;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 
-//  WEB kontroleris. Pažymi MVC valdiklį. Leidžia viduje naudoti @RequestMapping
-//  @RestController anotacija nurodo, jog String tipo rezultatas turėtų būti išspausdinamas klientui toks koks yra.
-@RestController
+// @RestController negrąžina view.
+// Kadangi mums reikia grąžinti view pagal Spring MVC, naudojame @Controller
+@Controller
 //  žymi konfigūracijos komponentą. Viduje leidžia kurti bean per metodus su @Bean
 //  Ši klasės lygio anotacija nurodo Spring karkasui “atspėti” konfigūraciją,
 //  remiantis priklausomybėmis (jar bibliotekos), kurias programuotojas įtraukė į projektą.
@@ -22,26 +22,14 @@ public class CalculatorController {
     // Maršrutizavimo informacija. Šiuo atveju, ji nurodo Spring karkasui,
     // jog visas HTTP užklausas, kurių kelias yra “/” apdoros metodas “home”.
     @RequestMapping(method = RequestMethod.GET, value = "/")
-    String hello() {
-        // ApplicationContext yra interfeisas, skirtas suteikti informaciją apie aplikacijos konfigūraciją
-        // Šiuo atveju naudojama konfigūracija paimama iš XML failo
-        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-        // Bean panaudojimas
-        HelloWorld bean = (HelloWorld) context.getBean("helloWorld");
-        return bean.getHello();
-        /*return "Internetinis skaičiuotuvas <p>" +
-                "Galimos operacijos: <br>" +
-                "&nbsp; &nbsp;  sudėti <br>" +
-                "&nbsp; &nbsp;  atimti <br>" +
-                "&nbsp; &nbsp;  dauginti <br>" +
-                "&nbsp; &nbsp;  dalinti <br>";*/
+    String home() {
+        // grąžiname JSP failą, turi būti talpinami 'webapp -> WEB-INF -> jsp' aplanke
+        return "skaiciuotuvas";
     }
 
-    // url pavyzdys http://localhost:8080/skaiciuoti?sk1=3&sk2=1&zenklas=%2B
-    // specialiems symboliams siųsti per url:
-    // https://meyerweb.com/eric/tools/dencoder/
-    @RequestMapping(method = RequestMethod.GET, value = "/skaiciuoti")
-    String skaiciuoti(@RequestParam HashMap<String, String> skaiciai) {
+    // Kadangi skaičiuotuvo forma naudoja POST metodą, čia irgi nurodome POST
+    @RequestMapping(method = RequestMethod.POST, value = "/skaiciuoti")
+    String skaiciuoti(@RequestParam HashMap<String, String> skaiciai, ModelMap modelMap) {
         int sk1 = Integer.parseInt(skaiciai.get("sk1"));
         int sk2 = Integer.parseInt(skaiciai.get("sk2"));
         String zenklas = skaiciai.get("zenklas");
@@ -57,6 +45,12 @@ public class CalculatorController {
             rezultatas = sk1 / sk2;
         }
 
-        return  sk1 + zenklas + sk2 + " = " + rezultatas;
+        // ModelMap objektas naudojamas siųsti reikšmes iš Spring MVC controller į JSP
+        modelMap.put("sk1", sk1);
+        modelMap.put("sk2", sk2);
+        modelMap.put("zenklas", zenklas);
+        modelMap.put("rezultatas", rezultatas);
+
+        return "skaiciuoti";
     }
 }
