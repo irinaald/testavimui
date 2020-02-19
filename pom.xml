@@ -51,6 +51,12 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Vartotojo laukelių validacijai -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.1.0.Final</version>
+        </dependency>
         <!-- testavimui  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
