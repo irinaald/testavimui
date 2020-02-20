@@ -1,5 +1,9 @@
-package com.spring.calculator;
+package com.spring.calculator.controller;
 
+import com.spring.calculator.model.Number;
+import com.spring.calculator.service.NumberService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,12 +17,23 @@ import java.util.HashMap;
 // @RestController negrąžina view.
 // Kadangi mums reikia grąžinti view pagal Spring MVC, naudojame @Controller
 @Controller
-//  žymi konfigūracijos komponentą. Viduje leidžia kurti bean per metodus su @Bean
+//  @EnableAutoConfiguration - žymi konfigūracijos komponentą. Viduje leidžia kurti bean per metodus su @Bean
 //  Ši klasės lygio anotacija nurodo Spring karkasui “atspėti” konfigūraciją,
 //  remiantis priklausomybėmis (jar bibliotekos), kurias programuotojas įtraukė į projektą.
 //  Šiuo atveju ji veikia kartu su main metodu.
 @EnableAutoConfiguration
 public class CalculatorController {
+    // autowire- naudojamas automatinei priklausomybių injekcijai
+    // Kad panaudoti @Autowired anotaciją, reikia pirmiausiai turėti apsirašius @Bean @Configuration klasėje
+    @Autowired
+    // @Qualifier anotacija kartu su @Autowired patikslina su kuriuo konkrečiai bean susieti priklausomybę.
+    // Jeigu @Configuration klasėje yra daugiau negu vienas bean, @Qualifier anotacija yra privaloma,
+    // kitu atveju metama klaida:
+    // 'Consider marking one of the beans as @Primary, updating the consumer to accept multiple beans,
+    // or using @Qualifier to identify the bean that should be consumed'
+    @Qualifier("NumberService")
+    public NumberService numberService;
+
     // Maršrutizavimo informacija. Šiuo atveju, ji nurodo Spring karkasui,
     // jog visas HTTP užklausas, kurių kelias yra “/” apdoros metodas “home”.
     @RequestMapping(method = RequestMethod.GET, value = "/")
@@ -60,7 +75,11 @@ public class CalculatorController {
             modelMap.put("zenklas", zenklas);
             modelMap.put("rezultatas", rezultatas);
 
+            // Kreipiamės į service, kuris savo ruožtu kreipiasi į DAO ir išsaugo irašą DB
+            numberService.save(new Number(sk1, sk2, zenklas, rezultatas));
+
             return "skaiciuoti";
         }
     }
+
 }
