@@ -69,6 +69,11 @@
             <artifactId>hibernate-core</artifactId>
             <version>5.3.7.Final</version>
         </dependency>
+        <!-- jsp jstl anotacijoms (pvz. forEach, url, param)-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
         <!-- testavimui  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

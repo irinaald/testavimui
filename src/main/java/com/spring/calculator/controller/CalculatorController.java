@@ -10,7 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.PathVariable;
 import javax.validation.Valid;
 import java.util.HashMap;
 
@@ -80,6 +80,38 @@ public class CalculatorController {
 
             return "skaiciuoti";
         }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/skaiciai")
+    public String getAllNumbers(Model model) {
+        model.addAttribute("skaiciai", numberService.getAll());
+        return "skaiciai";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/rodyti{id}")
+    public String getById(@RequestParam("id") int id, Model model) {
+        model.addAttribute("skaicius", numberService.getById(id));
+        return "skaicius";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/trinti{id}")
+    public String delete(@RequestParam("id") int id, Model model) {
+        numberService.delete(id);
+        model.addAttribute("skaiciai", numberService.getAll());
+        return "skaiciai";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/atnaujinti{id}")
+    public String update(@RequestParam("id") int id, Model model) {
+        model.addAttribute("skaicius", numberService.getById(id));
+        return "atnaujinti";
+    }
+
+    // Kadangi atnaujinti skaičių forma naudoja POST metodą, čia irgi nurodome POST
+    @RequestMapping(method = RequestMethod.POST, value = "/atnaujintiSkaiciu")
+    public String updateNumber(@ModelAttribute("skaicius") Number number) {
+        numberService.update(number);
+        return "redirect:/rodyti?id=" + number.getId();
     }
 
 }
