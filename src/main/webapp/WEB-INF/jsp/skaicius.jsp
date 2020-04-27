@@ -3,6 +3,7 @@
 	<head>
 		<title>Skaičius</title>
 		<jsp:include page="header.jsp"/>
+		<jsp:include page="menu.jsp"/>
 	</head>
 	<body class="container">
 		<div class="table-responsive">
@@ -33,4 +34,5 @@
 		<br>
 		<a type="button" href="/skaiciai" class="button">Atgal</a>
 	</body>
+	<jsp:include page="footer.jsp"/>
 </html>

@@ -1,7 +1,11 @@
 package com.spring.calculator.controller;
 
 import com.spring.calculator.model.Number;
+import com.spring.calculator.model.User;
 import com.spring.calculator.service.NumberService;
+import com.spring.calculator.service.SecurityService;
+import com.spring.calculator.service.UserService;
+import com.spring.calculator.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -23,6 +27,14 @@ import java.util.HashMap;
 //  Šiuo atveju ji veikia kartu su main metodu.
 @EnableAutoConfiguration
 public class CalculatorController {
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SecurityService securityService;
+
+    @Autowired
+    private UserValidator userValidator;
     // autowire- naudojamas automatinei priklausomybių injekcijai
     // Kad panaudoti @Autowired anotaciją, reikia pirmiausiai turėti apsirašius @Bean @Configuration klasėje
     @Autowired
@@ -36,7 +48,7 @@ public class CalculatorController {
 
     // Maršrutizavimo informacija. Šiuo atveju, ji nurodo Spring karkasui,
     // jog visas HTTP užklausas, kurių kelias yra “/” apdoros metodas “home”.
-    @RequestMapping(method = RequestMethod.GET, value = "/")
+    @GetMapping({"/", "/skaiciuotuvas"})
     String home(Model model) {
         // Jeigu Model 'number' nepraeina validacijos - per jį grąžinamos validacijos klaidos į View
         model.addAttribute("number", new Number());
@@ -112,6 +124,39 @@ public class CalculatorController {
     public String updateNumber(@ModelAttribute("skaicius") Number number) {
         numberService.update(number);
         return "redirect:/rodyti?id=" + number.getId();
+    }
+
+    @GetMapping("/registruoti")
+    public String registration(Model model) {
+        model.addAttribute("userForm", new User());
+
+        return "registruoti";
+    }
+
+    @PostMapping("/registruoti")
+    public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult) {
+        userValidator.validate(userForm, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "registruoti";
+        }
+
+        userService.save(userForm);
+
+        securityService.autoLogin(userForm.getUsername(), userForm.getPasswordConfirm());
+
+        return "redirect:/skaiciuotuvas";
+    }
+
+    @GetMapping("/prisijungti")
+    public String login(Model model, String error, String logout) {
+        if (error != null)
+            model.addAttribute("error", "Įvestas prisijungimo vardas ir/ arba slaptažodis yra neteisingi");
+
+        if (logout != null)
+            model.addAttribute("message", "Sėkmingai atsijungėte");
+
+        return "prisijungti";
     }
 
 }

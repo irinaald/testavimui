@@ -4,8 +4,9 @@
 	<head>
 		<title>Skaičiaus atnaujinimas</title>
 		<jsp:include page="header.jsp"/>
+		<jsp:include page="menu.jsp"/>
 	</head>
-	<body>
+	<body class="container">
 		<form:form name="skaicius" action="/atnaujintiSkaiciu" method="post">
 			<!-- id būtina pateikti formoje, kitaip į back-end nueis null. Todėl darome hidden, kad neredaguotų -->
 			<input type="hidden"	name="id"  			value="${skaicius.id}"><p>
@@ -20,4 +21,5 @@
 			<input type="submit" value="Atnaujinti">
 		</form:form>
 	</body>
+	<jsp:include page="footer.jsp"/>
 </html>

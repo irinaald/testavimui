@@ -4,12 +4,13 @@
     <head>
         <title>Skaičiuotuvas</title>
         <jsp:include page="header.jsp"/>
+        <jsp:include page="menu.jsp"/>
         <style>
             .error{color:red}
         </style>
     </head>
-    <body>
-        <h2>Internetinis skaičiuotuvas. Galimos operacijos: sudėti, atimti, dauginti, dalinti</h2>
+    <body class="container">
+        <h2>Galimos operacijos: sudėti, atimti, dauginti, dalinti</h2>
         <h3> Skaičiuotuvas jautrus neigiamiems skaičiams ;) </h3>
         <form:form method="post" action="skaiciuoti" modelAttribute="number">
             Pirmas skaičius: <form:input type="number" path="sk1"/>
@@ -22,8 +23,9 @@
                 <option value="-">Atimtis</option>
                 <option value="*">Daugyba</option>
                 <option value="/">Dalyba</option>
-            </select><p>
+            </select><br><br>
             <input type="submit" value="skaičiuoti">
         </form:form>
     </body>
+    <jsp:include page="footer.jsp"/>
 </html>
