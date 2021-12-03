@@ -48,7 +48,7 @@ public class CalculatorController {
 
     // Maršrutizavimo informacija. Šiuo atveju, ji nurodo Spring karkasui,
     // jog visas HTTP užklausas, kurių kelias yra “/” apdoros metodas “home”.
-    @GetMapping({"/", "/skaiciuotuvas"})
+    @GetMapping({"/", "/"})
     String home(Model model) {
         // Jeigu Model 'number' nepraeina validacijos - per jį grąžinamos validacijos klaidos į View
         model.addAttribute("number", new Number());
